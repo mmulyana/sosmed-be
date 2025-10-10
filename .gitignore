@@ -1,0 +1,53 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Build output directories
+bin/
+build/
+dist/
+tmp/
+
+# Dependency directories (for vendoring)
+vendor/
+
+# Logs
+*.log
+logs/
+*.tmp
+
+# Environment & local configs
+.env
+.env.local
+.env.*
+!.env.example
+
+# IDE & editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Migration temp files
+*.db
+migrations_lockfile*
+dump.sql
+
+# OS-specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Air live reload config cache (if you use air)
+tmp/
+.air.toml~

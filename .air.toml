@@ -1,0 +1,9 @@
+root = "."
+tmp_dir = "bin"
+
+[build]
+  cmd = "go build -o ./bin/api.exe ./cmd/api"
+  bin = "bin\\api.exe"
+  delay = 1000
+  rerun = true
+  stop_on_error = true
