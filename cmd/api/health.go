@@ -1,7 +1,13 @@
 package main
 
-import "net/http"
+import (
+	"log"
+	"net/http"
+)
 
 func (app *application) healthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Ok"))
+	err := WriteJSON(w, http.StatusOK, "Ok")
+	if err != nil {
+		log.Print(err.Error())
+	}
 }
