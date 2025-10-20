@@ -10,9 +10,9 @@ import (
 )
 
 type CreatePostPayload struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	UserId  int    `json:"userId"`
+	Title   string `json:"title" validate:"required,max=100"`
+	Content string `json:"content" validate:"required"`
+	UserId  int    `json:"userId" validate:"required"`
 }
 
 func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request) {
@@ -20,6 +20,15 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 	err := ReadJSON(w, r, &payload)
 	if err != nil {
 		WriteJSONError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = Validate.Struct(payload)
+	if err != nil {
+		validationErrors := formatValidationError(err)
+		WriteJSON(w, http.StatusBadRequest, map[string]any{
+			"errors": validationErrors,
+		})
 		return
 	}
 
@@ -63,7 +72,6 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 			WriteJSONError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
-		return
 	}
 
 	err = WriteJSON(w, http.StatusCreated, post)
