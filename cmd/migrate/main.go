@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -78,21 +79,33 @@ func main() {
 
 func createMigrationFiles(dir, name string) {
 	timestamp := time.Now().Format("20060102150405")
-	safeName := strings.ToLower(strings.ReplaceAll(name, " ", "_"))
+
+	reg := regexp.MustCompile(`[^a-zA-Z0-9_]+`)
+	safeName := strings.ToLower(name)
+	safeName = strings.ReplaceAll(safeName, " ", "_")
+	safeName = reg.ReplaceAllString(safeName, "_")
 
 	upFile := filepath.Join(dir, fmt.Sprintf("%s_%s.up.sql", timestamp, safeName))
 	downFile := filepath.Join(dir, fmt.Sprintf("%s_%s.down.sql", timestamp, safeName))
 
-	// pastikan folder ada
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 		log.Fatalf("❌ Gagal membuat folder migrations: %v", err)
 	}
 
-	// buat file kosong
-	if err := os.WriteFile(upFile, []byte("-- tulis SQL untuk UP migration di sini\n"), 0644); err != nil {
+	upTemplate := fmt.Sprintf(`-- +migrate Up
+CREATE TABLE IF NOT EXISTS %s (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);`, safeName)
+
+	downTemplate := fmt.Sprintf(`-- +migrate Down
+DROP TABLE IF EXISTS %s;`, safeName)
+
+	if err := os.WriteFile(upFile, []byte(upTemplate), 0644); err != nil {
 		log.Fatalf("❌ Gagal membuat file UP: %v", err)
 	}
-	if err := os.WriteFile(downFile, []byte("-- tulis SQL untuk DOWN migration di sini\n"), 0644); err != nil {
+	if err := os.WriteFile(downFile, []byte(downTemplate), 0644); err != nil {
 		log.Fatalf("❌ Gagal membuat file DOWN: %v", err)
 	}
 
