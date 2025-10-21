@@ -37,11 +37,16 @@ func (app *application) mount() *chi.Mux {
 
 	r.Route("/v1", func(r chi.Router) {
 		r.Route("/post", func(r chi.Router) {
+			r.Get("/", app.getPostsHandler)
 			r.Post("/", app.createPostHandler)
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Get("/", app.getPostHandler)
 			})
+		})
+
+		r.Route("/comment", func(r chi.Router) {
+			r.Post("/", app.createCommentHandler)
 		})
 	})
 
