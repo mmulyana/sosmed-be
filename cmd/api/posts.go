@@ -80,3 +80,18 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (app *application) getPostsHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	posts, err := app.store.Posts.GetAll(ctx)
+	if err != nil {
+		WriteJSONError(w, http.StatusNotFound, err.Error())
+		return
+	}
+
+	err = WriteJSON(w, http.StatusOK, posts)
+	if err != nil {
+		WriteJSONError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+}
