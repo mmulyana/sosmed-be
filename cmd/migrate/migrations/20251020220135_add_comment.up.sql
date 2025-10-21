@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS comments (
     userId INT NOT NULL,
     content TEXT NOT NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME,
     CONSTRAINT fk_post FOREIGN KEY (postId)
         REFERENCES posts(id)
         ON DELETE CASCADE,
